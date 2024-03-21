@@ -1,4 +1,4 @@
-import { computed, createApp } from 'vue';
+import { onMounted, computed, createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -6,7 +6,6 @@ import axios from 'axios';
 import UserService from '../src/service/user.service';
 import GlobalConstants from '../src/common/GlobalConstant';
 import GlobalFunction from '../src/common/GlobalFunction';
-console.log(UserService);
 
 import PrimeVue from 'primevue/config';
 import AutoComplete from 'primevue/autocomplete';
@@ -230,6 +229,7 @@ app.component('VirtualScroller', VirtualScroller);
 
 app.mount('#app');
 axios.defaults.showLoader = true;
+var jwtToken;
 computed({
     menuList() {
         console.log('object');
@@ -237,10 +237,16 @@ computed({
         return this.$store.state.auth.clickMenu;
     }
 });
-const accessToken = localStorage.getItem('accessToken');
-console.log(accessToken);
-const userinfo = app.config.globalProperties.$GlobalFunctions.parseJwt(accessToken);
-console.log(userinfo);
+const accessToken = jwtToken;
+console.log(jwtToken);
+async function getUserToken() {
+    jwtToken = await UserService.userToken().then((responce) => responce.data.result_id);
+    console.log(jwtToken);
+}
+getUserToken();
+
+//const userinfo = app.config.globalProperties.$GlobalFunctions.parseJwt(accessToken);
+//console.log(userinfo);
 axios.interceptors.request.use(
     function (config) {
         if (accessToken) {
@@ -278,7 +284,8 @@ axios.interceptors.response.use(
         return null;
     }
 );
-const RefreshTokenInterval = import.meta.env.VUE_APP_RefreshTokenIntervalInMinutes * 60 * 1000;
+const RefreshTokenInterval = import.meta.env.VITE_APP_RefreshTokenIntervalInMinutes * 60 * 1000;
+console.log(RefreshTokenInterval);
 function refreshToken() {
     console.log('Vangga Chura5');
     if (store.state.auth.loggedIn) {
