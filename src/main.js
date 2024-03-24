@@ -6,6 +6,7 @@ import axios from 'axios';
 import UserService from '../src/service/user.service';
 import GlobalConstants from '../src/common/GlobalConstant';
 import GlobalFunction from '../src/common/GlobalFunction';
+import LogoutFunction from '../src/common/logout';
 
 import PrimeVue from 'primevue/config';
 import AutoComplete from 'primevue/autocomplete';
@@ -240,17 +241,20 @@ computed({
 //router.push('/login');
 async function getUserToken() {
     jwtToken = await UserService.userToken().then((responce) => responce.data.result_id);
-    localStorage.setItem('jwtToken', jwtToken);
-    if (jwtToken == null || jwtToken == '') {
+    if (jwtToken) {
+        localStorage.setItem('jwtToken', jwtToken);
+        const userinfo = app.config.globalProperties.$GlobalFunctions.parseJwt(accessToken);
+        console.log(userinfo);
+    } else {
+        LogoutFunction.LogoutStoreClear();
         router.push('/login');
     }
 }
 getUserToken();
-console.log(localStorage.getItem('jwtToken'))
+
+console.log(localStorage.getItem('jwtToken'));
 const accessToken = localStorage.getItem('jwtToken');
 
-//const userinfo = app.config.globalProperties.$GlobalFunctions.parseJwt(accessToken);
-//console.log(userinfo);
 axios.interceptors.request.use(
     function (config) {
         if (accessToken) {
@@ -284,15 +288,13 @@ axios.interceptors.response.use(
         if (error.message === 'Network Error') {
             alert('Network Error!');
         }
-        alert('Server Error!');
         return null;
     }
 );
 const RefreshTokenInterval = import.meta.env.VITE_APP_RefreshTokenIntervalInMinutes * 60 * 1000;
 console.log(RefreshTokenInterval);
 function refreshToken() {
-    console.log('Vangga Chura5');
-    if (store.state.auth.loggedIn) {
+    if (accessToken) {
         UserService.refreshAdminUserAccessToken().then(
             (response) => {
                 if (response != null && response.data.jwt != null) {
@@ -304,6 +306,7 @@ function refreshToken() {
             (error) => {
                 console.log(error);
                 store.dispatch('auth/logout');
+                LogoutFunction.LogoutStoreClear();
                 router.push('/login');
                 alert('Session Time Out! Please Log in!');
             }
@@ -317,9 +320,9 @@ setInterval(() => {
 
 function Error401() {
     if (router.currentRoute.fullPath !== '/login') {
-        console.log('Vangga Chura6');
         var message = 'Either session is expired or you are not authorized for the action. Please try login again.';
         store.dispatch('auth/logout');
+        LogoutFunction.LogoutStoreClear();
         router.push('/login');
         alert(message);
     }
