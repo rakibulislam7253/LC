@@ -155,9 +155,14 @@ const router = createRouter({
         },
 
         {
-            path: '/auth/login',
-            name: 'login',
-            component: () => import('@/views/pages/auth/Login.vue')
+            path: '/login',
+            name: '/login',
+            component: () => 'login',
+            //path: "/Stackoverflow",
+            //component: Stackoverflow,
+            beforeEnter: () => {
+                window.location.href = 'http://cbptest.citizensbankbd.com/login';
+            }
         },
         {
             path: '/auth/access',
