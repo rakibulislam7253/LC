@@ -28,7 +28,6 @@ class UserService {
         return axios.post(API_URL + '/update', user);
     }
     userToken() {
-        console.log('I can get user token');
         console.log(API_URL);
         return axios.get('http://10.140.6.22/cPoint/api/Login/get_user_token');
     }

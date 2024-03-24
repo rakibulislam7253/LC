@@ -136,12 +136,6 @@ export const auth = {
             state.UserData = null;
             state.loggedIn = false;
             state.Permissions = [];
-            // localStorage.removeItem("accessToken");
-            // localStorage.removeItem("module_id");
-            // localStorage.removeItem("user");
-            // localStorage.removeItem("menuList");
-            // localStorage.removeItem("userid1");
-            // localStorage.removeItem("imageSrc");
             localStorage.clear();
         },
         refreshSessionUser(state, User) {

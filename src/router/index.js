@@ -158,8 +158,6 @@ const router = createRouter({
             path: '/login',
             name: '/login',
             component: () => 'login',
-            //path: "/Stackoverflow",
-            //component: Stackoverflow,
             beforeEnter: () => {
                 window.location.href = 'http://cbptest.citizensbankbd.com/login';
             }
