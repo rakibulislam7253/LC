@@ -229,6 +229,7 @@ app.component('VirtualScroller', VirtualScroller);
 app.mount('#app');
 axios.defaults.showLoader = true;
 var jwtToken;
+//const CONSTROL_CENTER_URL = import.meta.env.VITE_APP_CONTROL_CENTER_APP;
 computed({
     menuList() {
         console.log('object');
@@ -236,15 +237,18 @@ computed({
         return this.$store.state.auth.clickMenu;
     }
 });
-const accessToken = jwtToken;
-console.log(jwtToken);
+//router.push('/login');
 async function getUserToken() {
     jwtToken = await UserService.userToken().then((responce) => responce.data.result_id);
     localStorage.setItem('jwtToken', jwtToken);
-    console.log(jwtToken);
+    if (jwtToken == null || jwtToken == '') {
+        router.push('/login');
+    }
 }
 getUserToken();
-console.log(localStorage.getItem('jwtToken'));
+console.log(localStorage.getItem('jwtToken'))
+const accessToken = localStorage.getItem('jwtToken');
+
 //const userinfo = app.config.globalProperties.$GlobalFunctions.parseJwt(accessToken);
 //console.log(userinfo);
 axios.interceptors.request.use(
