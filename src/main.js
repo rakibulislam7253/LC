@@ -110,7 +110,6 @@ import TreeSelect from 'primevue/treeselect';
 import TreeTable from 'primevue/treetable';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
-
 import BlockViewer from '@/components/BlockViewer.vue';
 
 import '@/assets/styles.scss';
@@ -241,10 +240,11 @@ const accessToken = jwtToken;
 console.log(jwtToken);
 async function getUserToken() {
     jwtToken = await UserService.userToken().then((responce) => responce.data.result_id);
+    localStorage.setItem('jwtToken', jwtToken);
     console.log(jwtToken);
 }
 getUserToken();
-
+console.log(localStorage.getItem('jwtToken'));
 //const userinfo = app.config.globalProperties.$GlobalFunctions.parseJwt(accessToken);
 //console.log(userinfo);
 axios.interceptors.request.use(
